@@ -1,0 +1,22 @@
+.card__time, .card__mark {
+    display: flex;
+    align-items: center;
+}
+.card__time::before {
+    content: '';
+    display: block;
+    margin-right: 10px;
+    width: 16px;
+    height: 16px;
+    background-image: url('../img/calendar.png');
+    background-size: cover;
+}
+.card__mark::before {
+    content: '';
+    display: block;
+    margin-right: 10px;
+    width: 16px;
+    height: 16px;
+    background-image: url('../img/star.png');
+    background-size: cover;
+}
