@@ -3,7 +3,10 @@ let elList = document.querySelector(".movies__list");
 let elSelect = document.querySelector(".card__select");
 let elForm = document.querySelector(".form");
 let elListBokkmark = document.querySelector(".list-bookmark");
+let elModal = document.querySelector(".popap");
+let elModalInfo = document.querySelector(".modal--info");
 
+//Janrlarni select ichiga chiqarish uchun funksiya
 elResult.textContent = movies.length;
 const generateGenres = (films) => {
   const allGenres = [];
@@ -22,7 +25,7 @@ const generateGenres = (films) => {
     elSelect.appendChild(newGenreOption);
   });
 };
-
+//Cardlarni yaratish uchun funksiya
 let film = (films) => {
   let abc = [];
   for (let movie of films) {
@@ -39,6 +42,7 @@ let film = (films) => {
     let newCardList = document.createElement("ul");
     let newBtnBookmark = document.createElement("button");
     let newBtnContainer = document.createElement("div");
+    let newBtnMoreInfo = document.createElement("button");
 
     movie.categories.forEach((genre) => {
       let newCradItem = document.createElement("li");
@@ -49,6 +53,7 @@ let film = (films) => {
     });
 
     newBtnBookmark.dataset.btn = movie.imdbId;
+    newBtnMoreInfo.dataset.modalBtnId = movie.imdbId;
 
     //SET ATRIBUTE
     newItem.setAttribute("class", "movies__item mb-2");
@@ -59,7 +64,7 @@ let film = (films) => {
     newCardTitle.setAttribute("class", "card-title");
     newBtnContainer.setAttribute(
       "class",
-      "mt-auto d-flex justify-content-around"
+      "mt-auto d-flex justify-content-around flex-wrap"
     );
     newBtnTrailer.setAttribute("class", "btn btn-outline-primary ");
     newBtnTrailer.setAttribute(
@@ -71,6 +76,7 @@ let film = (films) => {
       "class",
       "btn btn-outline-success btn-bookmark"
     );
+    newBtnMoreInfo.setAttribute("class", "btn btn-outline-info mt-3 btn--info");
 
     //TEXT CONTENT
     newCardTitle.textContent = movie.title;
@@ -79,6 +85,7 @@ let film = (films) => {
     newCardLanguage.textContent = movie.language;
     newBtnTrailer.textContent = "Watch trailer";
     newBtnBookmark.textContent = "Bookmark";
+    newBtnMoreInfo.textContent = "More info";
 
     //APPEND CHILD
 
@@ -94,8 +101,10 @@ let film = (films) => {
     newCardBody.appendChild(newBtnContainer);
     newBtnContainer.appendChild(newBtnTrailer);
     newBtnContainer.appendChild(newBtnBookmark);
-    // Bookmark buttunga quloq solinayapdi
+    newBtnContainer.appendChild(newBtnMoreInfo);
+    // Bookmark buttunga quloq solinayapdi ya'ni bookmark button bosilganda push qiladi
     newBtnContainer.addEventListener("click", (evt) => {
+      let modalArr = [];
       if (evt.target.matches(".btn-bookmark")) {
         let bookmarkId = evt.target.dataset.btn;
         if (!abc.includes(movie)) {
@@ -105,11 +114,20 @@ let film = (films) => {
         } else {
           alert("Bu kino eslatmalarga qo`shilgan!");
         }
+      } else if (evt.target.matches(".btn--info")) {
+        elModal.style.display = "block";
+        let modalId = evt.target.dataset.modalBtnId;
+        if (movie.imdbId == modalId) {
+          modalArr.push(movie.summary);
+        }
       }
+      elModalInfo.textContent = modalArr;
       elListBokkmark.innerHTML = "";
       renderBookmark(abc, elListBokkmark);
     });
   }
+
+  //Bookmark larni o`chirish uchun funksiya
   elListBokkmark.addEventListener("click", (evt) => {
     if (evt.target.matches(".btn-remove")) {
       let bookmarkItemId = evt.target.dataset.idBookmarkItem;
@@ -123,7 +141,16 @@ let film = (films) => {
     }
   });
 };
-//BOOKMARKS render
+//modal yo`q bo`lishi uchun funksiya
+window.onclick = (evt) => {
+  if (evt.target.matches(".popap")) {
+    elModal.style.display = "none";
+  }
+  if (evt.target.matches(".close")) {
+    elModal.style.display = "none";
+  }
+};
+//BOOKMARKS yaratish uchun funksiya
 let renderBookmark = (bookmarks, element) => {
   for (let bookmark of bookmarks) {
     let newBookmarkItem = document.createElement("li");
@@ -147,6 +174,32 @@ let renderBookmark = (bookmarks, element) => {
     newBookmarkItem.appendChild(newBookmarkRemoveBtn);
   }
 };
+//Modal yaratish uchun funksiya
+
+/* let generateModal = (modalArr, element) => {
+  modalArr.forEach((modal) => {
+    let newModal = document.createElement("div");
+    let newModalContent = document.createElement("div");
+    let newModalClose = document.createElement("span");
+    let newModalList = document.createElement("ul");
+    let newItemSummary = document.createElement("li");
+
+    newModal.setAttribute("class", "popap");
+    newModalContent.setAttribute("class", "modal-content");
+    newModalClose.setAttribute("class", "close");
+
+    newModalClose.textContent = "&times;";
+    newItemSummary.textContent = modal.summary;
+
+    element.appendChild(newModal);
+    newModal.appendChild(newModalContent);
+    newModalContent.appendChild(newModalClose);
+    newModalContent.appendChild(newModalList);
+    newModalList.appendChild(newItemSummary);
+  });
+}; */
+
+//Janrlarni chiqarish uchun funksiya
 film(movies);
 elForm.addEventListener("submit", (evt) => {
   evt.preventDefault();
@@ -156,11 +209,11 @@ elForm.addEventListener("submit", (evt) => {
   let filteredFilms = movies.filter((movie) => {
     return movie.categories.includes(elSelect.value) || elSelect.value == "All";
   });
-  // for (let film of movies) {
-  //   if (film.categories.includes(elSelect.value) || elSelect.value == "All") {
-  //     filteredFilms.push(film);
-  //   }
-  // }
+  /*   for (let film of movies) {
+    if (film.categories.includes(elSelect.value) || elSelect.value == "All") {
+      filteredFilms.push(film);
+    }
+  } */
   film(filteredFilms);
 
   elResult.textContent = filteredFilms.length;
