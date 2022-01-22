@@ -150,6 +150,11 @@ window.onclick = (evt) => {
     elModal.style.display = "none";
   }
 };
+document.addEventListener("keydown", (evt) => {
+  if (evt.keyCode == "27") {
+    elModal.style.display = "none";
+  }
+});
 //BOOKMARKS yaratish uchun funksiya
 let renderBookmark = (bookmarks, element) => {
   for (let bookmark of bookmarks) {
