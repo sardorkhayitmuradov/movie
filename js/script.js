@@ -130,10 +130,9 @@ let film = (films) => {
   //Bookmark larni o`chirish uchun funksiya
   elListBokkmark.addEventListener("click", (evt) => {
     if (evt.target.matches(".btn-remove")) {
-      let bookmarkItemId = evt.target.dataset.idBookmarkItem;
       let bookmarkRemoveId = evt.target.dataset.idBookmarkRemove;
       const foundBookmarkIndex = abc.findIndex(
-        () => bookmarkItemId == bookmarkRemoveId
+        (movie) => movie.imdbId === bookmarkRemoveId
       );
       abc.splice(foundBookmarkIndex, 1);
       elListBokkmark.innerHTML = "";
