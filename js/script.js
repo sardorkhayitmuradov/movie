@@ -27,9 +27,9 @@ const generateGenres = (films) => {
     elSelect.appendChild(newGenreOption);
   });
 };
+let abc = [];
 //Cardlarni yaratish uchun funksiya
 let film = (films) => {
-  let abc = [];
   for (let movie of films) {
     //CEREAT
     let newItem = document.createElement("li");
@@ -130,20 +130,19 @@ let film = (films) => {
       renderBookmark(abc, elListBokkmark);
     });
   }
-
-  //Bookmark larni o`chirish uchun funksiya
-  elListBokkmark.addEventListener("click", (evt) => {
-    if (evt.target.matches(".btn-remove")) {
-      let bookmarkRemoveId = evt.target.dataset.idBookmarkRemove;
-      const foundBookmarkIndex = abc.findIndex(
-        (movie) => movie.imdbId === bookmarkRemoveId
-      );
-      abc.splice(foundBookmarkIndex, 1);
-      elListBokkmark.innerHTML = "";
-      renderBookmark(abc, elListBokkmark);
-    }
-  });
 };
+//Bookmark larni o`chirish uchun funksiya
+elListBokkmark.addEventListener("click", (evt) => {
+  if (evt.target.matches(".btn-remove")) {
+    let bookmarkRemoveId = evt.target.dataset.idBookmarkRemove;
+    const foundBookmarkIndex = abc.findIndex(
+      (movie) => movie.imdbId === bookmarkRemoveId
+    );
+    abc.splice(foundBookmarkIndex, 1);
+    elListBokkmark.innerHTML = "";
+    renderBookmark(abc, elListBokkmark);
+  }
+});
 //modal yo`q bo`lishi uchun funksiya
 window.onclick = (evt) => {
   if (evt.target.matches(".popap")) {
