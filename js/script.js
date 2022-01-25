@@ -5,6 +5,8 @@ let elForm = document.querySelector(".form");
 let elListBokkmark = document.querySelector(".list-bookmark");
 let elModal = document.querySelector(".popap");
 let elModalInfo = document.querySelector(".modal--info");
+let elSearchInfo = document.querySelector(".input--search");
+let elSearchReating = document.querySelector(".input--reating");
 
 //Janrlarni select ichiga chiqarish uchun funksiya
 elResult.textContent = movies.length;
@@ -62,6 +64,8 @@ let film = (films) => {
     newImg.setAttribute("src", movie.smallThumbnail);
     newCardBody.setAttribute("class", "card-body d-flex flex-column");
     newCardTitle.setAttribute("class", "card-title");
+    newCardDate.setAttribute("class", "card__time");
+    newCardRating.setAttribute("class", "card__mark");
     newBtnContainer.setAttribute(
       "class",
       "mt-auto d-flex justify-content-around flex-wrap"
@@ -207,20 +211,48 @@ let renderBookmark = (bookmarks, element) => {
 film(movies);
 elForm.addEventListener("submit", (evt) => {
   evt.preventDefault();
-
+  let searchValue = elSearchInfo.value.trim();
+  let searchReatingValue = elSearchReating.value.trim();
   elList.innerHTML = null;
 
   let filteredFilms = movies.filter((movie) => {
-    return movie.categories.includes(elSelect.value) || elSelect.value == "All";
+    return (
+      (movie.categories.includes(elSelect.value) || elSelect.value == "All") &&
+      movie.title.toLowerCase().includes(searchValue.toLowerCase()) &&
+      Math.floor(movie.imdbRating) == searchReatingValue
+    );
   });
+
   /*   for (let film of movies) {
     if (film.categories.includes(elSelect.value) || elSelect.value == "All") {
       filteredFilms.push(film);
     }
   } */
+
   film(filteredFilms);
 
   elResult.textContent = filteredFilms.length;
 });
+
+elSearchInfo.oninput = (evt) => {
+  evt.preventDefault();
+  let searchValue = elSearchInfo.value.trim();
+  let searchBox = movies.filter((movie) => {
+    return movie.title.toLowerCase().includes(searchValue.toLowerCase());
+  });
+  elList.innerHTML = "";
+  film(searchBox);
+  elResult.textContent = searchBox.length;
+};
+elSearchReating.oninput = (evt) => {
+  evt.preventDefault();
+  let searchReatingValue = elSearchReating.value.trim();
+  let reatingBox = movies.filter((movie) => {
+    return Math.floor(movie.imdbRating) == searchReatingValue;
+  });
+  elList.innerHTML = "";
+  film(reatingBox);
+  elResult.textContent = reatingBox.length;
+};
 
 generateGenres(movies);
