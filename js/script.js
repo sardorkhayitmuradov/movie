@@ -5,13 +5,44 @@ let elForm = document.querySelector(".form");
 let elListBokkmark = document.querySelector(".list-bookmark");
 let elModal = document.querySelector(".popap");
 let elModalInfo = document.querySelector(".modal--info");
+let elModalInfoGenre = document.querySelector(".modal--genre");
 let elSearchInfo = document.querySelector(".input--search");
 let elSearchReating = document.querySelector(".input--reating");
 
+//BOOKMARKS yaratish uchun funksiya
+let renderBookmark = (bookmarksArr, element) => {
+  for (let bookmark of bookmarksArr) {
+    let newBookmarkItem = document.createElement("li");
+    let newBookmarkRemoveBtn = document.createElement("button");
+
+    newBookmarkRemoveBtn.setAttribute(
+      "class",
+      "btn btn-danger mt-2 btn-remove"
+    );
+    newBookmarkItem.setAttribute(
+      "class",
+      "list-group-item d-flex flex-column align-items-start"
+    );
+    newBookmarkItem.textContent = bookmark.title;
+
+    newBookmarkItem.dataset.idBookmarkItem = bookmark.imdbId;
+    newBookmarkRemoveBtn.dataset.idBookmarkRemove = bookmark.imdbId;
+
+    newBookmarkRemoveBtn.textContent = "Remove";
+    element.appendChild(newBookmarkItem);
+    newBookmarkItem.appendChild(newBookmarkRemoveBtn);
+  }
+};
+
 //Janrlarni select ichiga chiqarish uchun funksiya
 elResult.textContent = movies.length;
+// BOOKMARKLAR UCHUN ARRAY
+const bookmarksLocal = JSON.parse(window.localStorage.getItem("bookmarks"));
+let abc = bookmarksLocal;
+renderBookmark(abc, elListBokkmark);
 const generateGenres = (films) => {
   const allGenres = [];
+
   films.forEach((film) => {
     film.categories.forEach((categorie) => {
       if (!allGenres.includes(categorie)) allGenres.push(categorie);
@@ -27,7 +58,7 @@ const generateGenres = (films) => {
     elSelect.appendChild(newGenreOption);
   });
 };
-let abc = [];
+
 //Cardlarni yaratish uchun funksiya
 let film = (films) => {
   for (let movie of films) {
@@ -41,18 +72,9 @@ let film = (films) => {
     let newCardRating = document.createElement("p");
     let newCardLanguage = document.createElement("p");
     let newBtnTrailer = document.createElement("a");
-    let newCardList = document.createElement("ul");
     let newBtnBookmark = document.createElement("button");
     let newBtnContainer = document.createElement("div");
     let newBtnMoreInfo = document.createElement("button");
-
-    movie.categories.forEach((genre) => {
-      let newCradItem = document.createElement("li");
-
-      newCradItem.textContent = genre;
-
-      newCardList.appendChild(newCradItem);
-    });
 
     newBtnBookmark.dataset.btn = movie.imdbId;
     newBtnMoreInfo.dataset.modalBtnId = movie.imdbId;
@@ -101,7 +123,6 @@ let film = (films) => {
     newCardBody.appendChild(newCardDate);
     newCardBody.appendChild(newCardRating);
     newCardBody.appendChild(newCardLanguage);
-    newCardBody.appendChild(newCardList);
     newCardBody.appendChild(newBtnContainer);
     newBtnContainer.appendChild(newBtnTrailer);
     newBtnContainer.appendChild(newBtnBookmark);
@@ -122,12 +143,16 @@ let film = (films) => {
         elModal.style.display = "block";
         let modalId = evt.target.dataset.modalBtnId;
         if (movie.imdbId == modalId) {
-          modalArr.push(movie.summary);
+          modalArr.push(movie);
         }
       }
-      elModalInfo.textContent = modalArr;
+      for (let movie of modalArr) {
+        elModalInfoGenre.textContent = "Categories: " + movie.categories;
+        elModalInfo.textContent = movie.summary;
+      }
       elListBokkmark.innerHTML = "";
       renderBookmark(abc, elListBokkmark);
+      window.localStorage.setItem("bookmarks", JSON.stringify(abc));
     });
   }
 };
@@ -141,6 +166,7 @@ elListBokkmark.addEventListener("click", (evt) => {
     abc.splice(foundBookmarkIndex, 1);
     elListBokkmark.innerHTML = "";
     renderBookmark(abc, elListBokkmark);
+    window.localStorage.setItem("bookmarks", JSON.stringify(abc));
   }
 });
 //modal yo`q bo`lishi uchun funksiya
@@ -157,54 +183,6 @@ document.addEventListener("keydown", (evt) => {
     elModal.style.display = "none";
   }
 });
-//BOOKMARKS yaratish uchun funksiya
-let renderBookmark = (bookmarks, element) => {
-  for (let bookmark of bookmarks) {
-    let newBookmarkItem = document.createElement("li");
-    let newBookmarkRemoveBtn = document.createElement("button");
-
-    newBookmarkRemoveBtn.setAttribute(
-      "class",
-      "btn btn-danger mt-2 btn-remove"
-    );
-    newBookmarkItem.setAttribute(
-      "class",
-      "list-group-item d-flex flex-column align-items-start"
-    );
-    newBookmarkItem.textContent = bookmark.title;
-
-    newBookmarkItem.dataset.idBookmarkItem = bookmark.imdbId;
-    newBookmarkRemoveBtn.dataset.idBookmarkRemove = bookmark.imdbId;
-
-    newBookmarkRemoveBtn.textContent = "Remove";
-    element.appendChild(newBookmarkItem);
-    newBookmarkItem.appendChild(newBookmarkRemoveBtn);
-  }
-};
-//Modal yaratish uchun funksiya
-
-/* let generateModal = (modalArr, element) => {
-  modalArr.forEach((modal) => {
-    let newModal = document.createElement("div");
-    let newModalContent = document.createElement("div");
-    let newModalClose = document.createElement("span");
-    let newModalList = document.createElement("ul");
-    let newItemSummary = document.createElement("li");
-
-    newModal.setAttribute("class", "popap");
-    newModalContent.setAttribute("class", "modal-content");
-    newModalClose.setAttribute("class", "close");
-
-    newModalClose.textContent = "&times;";
-    newItemSummary.textContent = modal.summary;
-
-    element.appendChild(newModal);
-    newModal.appendChild(newModalContent);
-    newModalContent.appendChild(newModalClose);
-    newModalContent.appendChild(newModalList);
-    newModalList.appendChild(newItemSummary);
-  });
-}; */
 
 //Janrlarni chiqarish uchun funksiya
 film(movies);
