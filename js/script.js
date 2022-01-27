@@ -39,7 +39,7 @@ elResult.textContent = movies.length;
 // BOOKMARKLAR UCHUN ARRAY
 const bookmarksLocal = JSON.parse(window.localStorage.getItem("bookmarks"));
 let abc = bookmarksLocal;
-renderBookmark(abc, elListBokkmark);
+renderBookmark(bookmarksLocal, elListBokkmark);
 const generateGenres = (films) => {
   const allGenres = [];
 
