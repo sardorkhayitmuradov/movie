@@ -11,7 +11,7 @@ let elSearchReating = document.querySelector(".input--reating");
 
 //BOOKMARKS yaratish uchun funksiya
 let renderBookmark = (bookmarksArr, element) => {
-  for (let bookmark of bookmarksArr) {
+  bookmarksArr.forEach(bookmark =>{
     let newBookmarkItem = document.createElement("li");
     let newBookmarkRemoveBtn = document.createElement("button");
 
@@ -31,7 +31,9 @@ let renderBookmark = (bookmarksArr, element) => {
     newBookmarkRemoveBtn.textContent = "Remove";
     element.appendChild(newBookmarkItem);
     newBookmarkItem.appendChild(newBookmarkRemoveBtn);
-  }
+  
+  }) 
+   
 };
 
 //Janrlarni select ichiga chiqarish uchun funksiya
@@ -39,7 +41,7 @@ elResult.textContent = movies.length;
 // BOOKMARKLAR UCHUN ARRAY
 const bookmarksLocal = JSON.parse(window.localStorage.getItem("bookmarks"));
 let abc = bookmarksLocal;
-renderBookmark(bookmarksLocal, elListBokkmark);
+renderBookmark(abc, elListBokkmark);
 const generateGenres = (films) => {
   const allGenres = [];
 
