@@ -48,6 +48,7 @@ const generateGenres = (films) => {
       if (!allGenres.includes(categorie)) allGenres.push(categorie);
     });
   });
+  allGenres.sort();
 
   allGenres.forEach((genre) => {
     let newGenreOption = document.createElement("option");
